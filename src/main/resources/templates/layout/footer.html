@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.thymeleaf.org">
+				<footer class="footer" th:fragment="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <script>document.write(new Date().getFullYear())</script> © Glan Data Sistemas.
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="text-sm-end d-none d-sm-block">
+                                    [[${codigoPagina}]]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/head :: head}"></head>
+
+<body data-sidebar="dark">
+
+	<!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+	<!-- Begin page -->
+	<div id="layout-wrapper">
+
+		<header th:replace="~{/layout/header :: header}"></header>
+
+		<!-- ========== Left Sidebar Start ========== -->
+		<div th:replace="~{/layout/vertical-menu :: vertical-menu}"></div>
+		<!-- Left Sidebar End -->
+
+
+
+		<!-- ============================================================== -->
+		<!-- Start right Content here -->
+		<!-- ============================================================== -->
+		<div class="main-content">
+
+			<div class="page-content">
+				<div class="container-fluid">
+
+					<!-- start page title -->
+					<div class="row">
+						<div class="col-12">
+							<div class="row"></div>
+							<div
+								th:replace="~{/components/titulo-pagina :: titulo('Produtos', ${ {'Cadastros', 'Produtos'} })}"></div>
+
+							<a class="btn btn-primary w-md" th:href="@{/produtos/cadastrar}">Novo
+								Produto</a>
+						</div>
+					</div>
+					<!-- end page title -->
+
+					<hr>
+
+					<div class="row">
+						<div class="col-12">
+							<div  th:if="${mensagem} " class="alert alert-success alert-dismissible fade show" role="alert">
+	     	                   <i class="mdi mdi-check-all me-2"></i>
+		                           [[${mensagem}]]
+		                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	                       </div>
+						</div>
+                    </div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<table id="datatable" class="table table-striped dt-responsive nowrap w-100 dataTable" role="grid">
+								<thead>
+									<tr role="row">
+										<th class="col-2">Nome</th>
+										<th class="col-5">Descrição</th>
+										<th class="col-1">Preço</th>
+										<th class="col-1">Categoria</th>
+										<th class="col-2">Cadastrado em:</th>
+										<th class="col-1 text-center">
+											<i class="fas fa-edit"></i> |
+											<i class="fas fa-trash"></i>
+										</th>
+									</tr>
+								</thead>
+
+
+								<tbody>
+									<tr th:each="produto: ${produtos}">
+										<td>[[${produto.nome}]]</td>
+										<td>[[${produto.descricao}]]</td>
+										<td>[[${#numbers.formatDecimal(produto.preco, 1 , 2, 'COMMA')}]]</td>
+										<td>[[${produto.categoria.nome}]]</td>
+										<td>[[${produto.dataCadastro}]]</td>
+										<td class="text-center">
+											<form th:action="@{/produtos/deletar}" method="post" th:id="'form_'+${produto.id}">
+												<a class="btn btn-link" th:href="@{|/produtos/${produto.id}/editar|}"><i class="fas fa-edit"></i></a> | 
+												<input type="hidden" name="id" th:value="${produto.id}">
+												<button type="button" class="btn btn-link" th:onclick="deleta_registro([[${produto.id}]],[[${produto.nome}]])"><i class="fas fa-trash"></i></button>
+											</form>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+				</div>
+				<!-- container-fluid -->
+			</div>
+			<!-- End Page-content -->
+
+
+			<!-- footer -->
+			<footer th:replace="~{/layout/footer :: footer}"></footer>
+		</div>
+		<!-- end main content-->
+
+	</div>
+	<!-- END layout-wrapper -->
+
+	<!-- Right Sidebar -->
+	<div th:replace="~{/layout/right-bar :: right-bar}"></div>
+	<!-- /Right-bar -->
+
+	<!-- JAVASCRIPT -->
+	<div th:block th:include="~{/layout/scripts :: scripts}"></div>
+
+</body>
+</html>

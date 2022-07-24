@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/head :: head}"></head>
+
+<body data-sidebar="dark" th:with="menu='cadastros', subMenu='clientes'">
+
+	<!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+	<!-- Begin page -->
+	<div id="layout-wrapper">
+
+		<header th:replace="~{/layout/header :: header}"></header>
+
+		<!-- ========== Left Sidebar Start ========== -->
+		<div th:replace="~{/layout/vertical-menu :: vertical-menu}"></div>
+		<!-- Left Sidebar End -->
+
+		<!-- ============================================================== -->
+		<!-- Start right Content here -->
+		<!-- ============================================================== -->
+		<div class="main-content">
+
+			<div class="page-content">
+				<div class="container-fluid">
+
+					<!-- start page title -->
+					<div class="row">
+						<div class="col-12">
+							<div
+								th:replace="~{/components/titulo-pagina :: titulo('Clientes', ${ {'Cadastros', 'Clientes', 'Editar'} })}"></div>
+
+							<!-- Input Row -->
+							<div class="row">
+								<!-- First Group of Inputs -->
+								<div class="col-md-12">
+									<div class="card">
+										<div class="card-body">
+											<h4 class="card-title mb-4">Editar Cliente </h4>
+
+											<form th:action="@{/clientes/editar}" th:object="${cliente}" method="post">
+												<div th:replace="~{/cliente/componente-formulario :: formulario}"></div>
+											</form>
+										</div>
+										<!-- end card body -->
+									</div>
+									<!-- end card -->
+								</div>
+							</div>
+						</div>
+						<!-- end page title -->
+					</div>
+
+				</div>
+				<!-- container-fluid -->
+			</div>
+			<!-- End Page-content -->
+
+
+			<!-- footer -->
+			<footer th:replace="~{/layout/footer :: footer}"></footer>
+		</div>
+		<!-- end main content-->
+
+	</div>
+	<!-- END layout-wrapper -->
+
+	<!-- Right Sidebar -->
+	<div th:replace="~{/layout/right-bar :: right-bar}"></div>
+	<!-- /Right-bar -->
+
+	<!-- JAVASCRIPT -->
+	<th:block th:include="~{/layout/scripts :: scripts}"></th:block>
+
+</body>
+</html>

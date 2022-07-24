@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{/layout/head :: head}"></head>
+
+    <body th:class="${@navigationSession.menuHide ? 'sidebar-enable vertical-collpse': ''}" data-sidebar="dark">
+
+    <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+
+            <header th:replace="~{/layout/header :: header}"></header>
+            
+            <!-- ========== Left Sidebar Start ========== -->
+            <div th:replace="~{/layout/vertical-menu :: vertical-menu}"></div>
+            <!-- Left Sidebar End -->
+
+            
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+								<div th:replace="~{/components/titulo-pagina :: titulo('Página Inicial', '')}"></div>
+								Sessão: [[${@navigationSession.textoSession}]]
+                            </div>
+                        </div>
+                        <!-- end page title -->
+                        
+                    </div> <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+
+                
+                <!-- footer -->
+                <footer th:replace="~{/layout/footer :: footer}"></footer>
+            </div>
+            <!-- end main content-->
+
+        </div>
+        <!-- END layout-wrapper -->
+
+        <!-- Right Sidebar -->
+        <div th:replace="~{/layout/right-bar :: right-bar}"></div>
+        <!-- /Right-bar -->
+
+        <!-- JAVASCRIPT -->
+        <div th:block th:include="~{/layout/scripts :: scripts}"></div>
+
+    </body>
+</html>

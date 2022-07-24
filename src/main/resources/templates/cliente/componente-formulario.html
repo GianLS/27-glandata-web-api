@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+											<div th:fragment="formulario">
+												<input type="hidden" th:field="*{id}">
+												<div class="mb-3">
+													<label for="nome" class="form-label">Nome</label>
+													<input type="text" th:field="*{nome}" th:errorClass="is-invalid" class="form-control" maxlength="50">
+													<div class="invalid-feedback">
+														<span th:errors="*{nome}"></span>
+													</div>
+												</div>
+
+												<div class="row">
+													<div class="col-md-4">
+														<div class="mb-3">
+															<label for="email" class="form-label">E-mail</label>
+															<input type="text" th:field="*{email}" th:errorClass="is-invalid" class="form-control">
+															<div class="invalid-feedback">
+																<span th:errors="*{email}"></span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="mb-3">
+															<label for="cpf" class="form-label">CPF</label>
+															<input type="text" th:field="*{cpf}" th:errorClass="is-invalid" class="form-control">
+															<div class="invalid-feedback">
+																<span th:errors="*{cpf}"></span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="mb-3">
+															<label for="dataNascimento" class="form-label">Data de Nascimento</label>
+															<input type="text" th:field="*{dataNascimento}" th:errorClass="is-invalid" class="form-control">
+															<div class="invalid-feedback">
+																<span th:errors="*{dataNascimento}"></span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div>
+													<button type="submit" class="btn btn-primary w-md"><i class="fa fa-save me-1"></i> Salvar</button>
+													<a href="javascript:history.back(-1)" class="btn btn-secondary"><i class="fa fa-arrow-left me-1"></i> Voltar</a>
+												</div>
+											</div>
+</html>

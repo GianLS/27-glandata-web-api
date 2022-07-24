@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/head :: head}"></head>
+
+<body data-sidebar="dark">
+											<div th:fragment="formulario">
+												<div class="row">
+													<input type="text" th:field="*{id}" hidden="true">
+													<div class="col-md-3 mb-3">
+														<label for="nome" class="form-label">Nome</label>
+														<input type="text" th:field="*{nome}" th:errorClass="is-invalid" class="form-control">
+														<div class="invalid-feedback">
+															<span th:errors="*{nome}"></span>
+														</div>
+													</div>
+													<div class="col-md-9 mb-3">
+														<label for="descricao" class="form-label">Descrição</label>
+														<input type="text" th:field="*{descricao}" th:errorClass="is-invalid" class="form-control">
+														<div class="invalid-feedback">
+															<span th:errors="*{descricao}"></span>
+														</div>
+													</div>
+													<div class="col-md-4 mb-3">
+														<label for="preco" class="form-label">Preço</label>
+														<input type="text" th:field="*{preco}" th:errorClass="is-invalid" class="form-control">
+														<div class="invalid-feedback">
+															<span th:errors="*{preco}"></span>
+														</div>
+													</div>
+													<div class="col-md-4 mb-3">
+														<label for="categoria" class="form-label">Categoria</label>
+														<select class="form-select" th:field="*{categoria}" th:errorClass="is-invalid" >
+													    	<option value="0">Selecione</option>
+													    	<option th:each="categoria: ${categorias}" th:value="${categoria.id}" th:text="${categoria.nome}"></option>
+													    </select>
+													    <div class="invalid-feedback">
+															<span th:errors="*{categoria}"></span>
+														</div>
+													</div>
+													<div class="col-md-4 mb-3">
+														<label for="dataCadastro" class="form-label">Cadastrado em</label>
+														<input type="text" th:field="*{dataCadastro}" th:errorClass="is-invalid" class="form-control">
+														<div class="invalid-feedback">
+															<span th:errors="*{dataCadastro}"></span>
+														</div>
+													</div>
+												</div>
+												<div>
+													<button type="submit" class="btn btn-primary w-md"><i class="fa fa-save me-1"></i> Salvar</button>
+													<a href="javascript:history.back(-1)" class="btn btn-secondary"><i class="fa fa-arrow-left me-1"></i> Voltar</a>
+												</div>
+											</div>
+</body>
+</html>

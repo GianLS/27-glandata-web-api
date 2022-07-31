@@ -1,21 +1,22 @@
 package br.com.glandata.web.dto;
 
-import br.com.glandata.web.model.Categoria;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import br.com.glandata.web.dto.ProdutoDto.ProdutoView;
 import lombok.Getter;
+import lombok.Setter;
 
 public class CategoriaDto {
-	public CategoriaDto(Categoria categoria) {
-		this.id = categoria.getId();
-		this.nome = categoria.getNome();
-		this.descricao = categoria.getDescricao();
-	}
-	
 	@Getter
+	@Setter
 	private Long id;
-	
+
 	@Getter
+	@Setter
+	@JsonView({ ProdutoView.Basico.class })
 	private String nome;
-	
+
 	@Getter
+	@Setter
 	private String descricao;
 }

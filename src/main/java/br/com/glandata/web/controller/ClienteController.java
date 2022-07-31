@@ -17,14 +17,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.glandata.web.model.Cliente;
-import br.com.glandata.web.repository.ClienteRepository;
+import br.com.glandata.web.service.ClienteService;
 
 @Controller
 @RequestMapping("clientes")
 public class ClienteController {
 
 	@Autowired
-	private ClienteRepository clienteRepository;
+	private ClienteService clienteService;
 
 	/**
 	 * Método que retorna a página com a listagem de todos os clientes.
@@ -35,7 +35,7 @@ public class ClienteController {
 	public ModelAndView index() {
 		ModelAndView model = new ModelAndView("cliente/index");
 
-		List<Cliente> clientes = clienteRepository.findAll();
+		List<Cliente> clientes = clienteService.findAll();
 
 		model.addObject("clientes", clientes);
 
@@ -68,7 +68,7 @@ public class ClienteController {
 			return new ModelAndView("cliente/cadastrar");
 		}
 
-		clienteRepository.save(cliente);
+		clienteService.save(cliente);
 
 		redirect.addFlashAttribute("mensagem", "Cliente cadastrado com sucesso!!");
 
@@ -85,7 +85,7 @@ public class ClienteController {
 	public ModelAndView getEditar(@PathVariable Long id) {
 		ModelAndView model = new ModelAndView("cliente/editar");
 
-		Optional<Cliente> cliente = clienteRepository.findById(id);
+		Optional<Cliente> cliente = clienteService.buscarPorId(id);
 		
 		if (cliente.isEmpty()) {
 			return new ModelAndView("home/pages-404");
@@ -110,7 +110,7 @@ public class ClienteController {
 			return new ModelAndView("cliente/editar");
 		}
 
-		clienteRepository.save(cliente);
+		clienteService.save(cliente);
 
 		redirect.addFlashAttribute("mensagem", "Cliente alterado com sucesso!!");
 
@@ -126,13 +126,13 @@ public class ClienteController {
 	 */
 	@PostMapping("deletar")
 	public ModelAndView postDeletar(Long id, RedirectAttributes redirect) {
-		Optional<Cliente> cliente = clienteRepository.findById(id);
+		Optional<Cliente> cliente = clienteService.buscarPorId(id);
 		
 		if (cliente.isEmpty()) {
 			return new ModelAndView("redirect:/erro404");
 		}
 		
-		clienteRepository.delete(cliente.get());
+		clienteService.delete(id);
 		
 		redirect.addFlashAttribute("mensagem", "Cliente excluído com sucesso!!");
 

@@ -20,6 +20,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.NumberFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -66,6 +68,7 @@ public class Produto {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@NotNull(message = "Informe uma categoria para o produto.")
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_categoria"))
+	@JsonIgnore
 	private Categoria categoria;
 
 	@Getter

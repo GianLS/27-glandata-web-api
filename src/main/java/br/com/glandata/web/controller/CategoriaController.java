@@ -17,14 +17,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.glandata.web.model.Alerta;
 import br.com.glandata.web.model.Categoria;
-import br.com.glandata.web.repository.CategoriaRepository;
+import br.com.glandata.web.service.CategoriaService;
 
 @Controller
 @RequestMapping("categorias")
 public class CategoriaController {
 
 	@Autowired
-	private CategoriaRepository categoriaRepository;
+	private CategoriaService categoriaService;
 
 	/**
 	 * Método que retorna a página com a listagem de todos os categorias.
@@ -35,7 +35,7 @@ public class CategoriaController {
 	public ModelAndView index() {
 		ModelAndView model = new ModelAndView("categoria/index");
 
-		List<Categoria> categorias = categoriaRepository.findAll();
+		List<Categoria> categorias = categoriaService.findAll();
 
 		model.addObject("categorias", categorias);
 
@@ -67,7 +67,7 @@ public class CategoriaController {
 			return new ModelAndView("categoria/cadastrar");
 		}
 
-		categoriaRepository.save(categoria);
+		categoriaService.save(categoria);
 
 		redirect.addFlashAttribute("mensagem", new Alerta("alert-success", "Categoria cadastrada com sucesso!!", "fas fa-check-circle"));
 
@@ -84,7 +84,7 @@ public class CategoriaController {
 	public ModelAndView getEditar(@PathVariable Long id) {
 		ModelAndView model = new ModelAndView("categoria/editar");
 
-		Optional<Categoria> categoria = categoriaRepository.findById(id);
+		Optional<Categoria> categoria = categoriaService.buscarPorId(id);
 
 		if (categoria.isEmpty()) {
 			return new ModelAndView("home/pages-404");
@@ -109,7 +109,7 @@ public class CategoriaController {
 			return new ModelAndView("categoria/editar");
 		}
 
-		categoriaRepository.save(categoria);
+		categoriaService.save(categoria);
 
 		redirect.addFlashAttribute("mensagem", new Alerta("alert-success", "Categoria alterada com sucesso!!", "fas fa-check-circle"));
 
@@ -123,7 +123,7 @@ public class CategoriaController {
 	 */
 	@PostMapping("deletar")
 	public ModelAndView postDeletar(Long id, RedirectAttributes redirect) {
-		Optional<Categoria> categoria = categoriaRepository.findById(id);
+		Optional<Categoria> categoria = categoriaService.buscarPorId(id);
 
 		if (categoria.isEmpty()) {
 			return new ModelAndView("redirect:/erro404");
@@ -132,7 +132,7 @@ public class CategoriaController {
 			redirect.addFlashAttribute("mensagem", new Alerta("alert-danger", "Categoria não pôde ser excluída pois está sendo utilizada em algum produto!!", "fas fa-exclamation-circle"));
 		
 		} else {
-			categoriaRepository.delete(categoria.get());
+			categoriaService.delete(id);
 			redirect.addFlashAttribute("mensagem", new Alerta("alert-success", "Categoria excluída com sucesso!!", "fas fa-check-circle"));
 		}
 

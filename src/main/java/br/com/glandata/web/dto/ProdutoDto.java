@@ -3,35 +3,52 @@ package br.com.glandata.web.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import br.com.glandata.web.model.Produto;
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProdutoDto {
-	
-	public ProdutoDto(Produto produto) {
-		this.id = produto.getId();
-		this.nome = produto.getNome();
-		this.descricao = produto.getDescricao();
-		this.preco = produto.getPreco();
-		this.categoria = new CategoriaDto(produto.getCategoria()).getNome();
-		this.preco = produto.getPreco();
+	public interface ProdutoView {
+		public static interface Basico {
+		}
+
+		public static interface SemCategoria {
+		}
+
+		public static interface ApenasNome {
+		}
 	}
 
 	@Getter
+	@Setter
+	@JsonView({ ProdutoView.SemCategoria.class })
 	private Long id;
 
 	@Getter
+	@Setter
+	@JsonView({ ProdutoView.Basico.class, ProdutoView.ApenasNome.class, ProdutoView.SemCategoria.class })
 	private String nome;
 
 	@Getter
+	@Setter
+	@JsonView({ ProdutoView.Basico.class, ProdutoView.SemCategoria.class })
 	private String descricao;
 
 	@Getter
+	@Setter
+	@JsonView({ ProdutoView.Basico.class, ProdutoView.SemCategoria.class })
 	private BigDecimal preco;
 
 	@Getter
-	private String categoria;
+	@Setter
+	@JsonView({ ProdutoView.Basico.class })
+	private CategoriaDto categoria;
 
 	@Getter
-	private LocalDate dataCadastro = LocalDate.now();
+	@Setter
+	@JsonView({ ProdutoView.SemCategoria.class })
+	private LocalDate dataCadastro;
 }

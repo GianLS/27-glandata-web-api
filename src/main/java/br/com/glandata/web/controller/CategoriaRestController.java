@@ -1,9 +1,10 @@
 package br.com.glandata.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,15 +29,14 @@ public class CategoriaRestController {
 
 		@Autowired
 		private CategoriaService categoriaService;
+		
+		@Autowired
+		private ModelMapper modelMapper;
 	
 		@GetMapping("")
 		@Cacheable(value = "listaDeCategorias")
 		public List<CategoriaDto> listarCategorias() {
-			List<CategoriaDto> categorias = new ArrayList<CategoriaDto>();
-			
-			categoriaService.findAll().forEach(p -> categorias.add(new CategoriaDto(p)));
-			
-			return categorias;
+			return categoriaService.findAll().stream().map(c -> modelMapper.map(c, CategoriaDto.class)).collect(Collectors.toList());
 		}
 		
 		@GetMapping("{id}")
@@ -47,19 +47,19 @@ public class CategoriaRestController {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 			
-			return new ResponseEntity<CategoriaDto>(new CategoriaDto(categoria.get()), HttpStatus.OK);			
+			return new ResponseEntity<CategoriaDto>(modelMapper.map(categoria.get(), CategoriaDto.class), HttpStatus.OK);			
 		}
 		
 		@CacheEvict(value = "listaDeCategorias", allEntries = true)
 		@PostMapping("")
 		public ResponseEntity<CategoriaDto> postCategoria(@RequestBody Categoria categoria){
-			return ResponseEntity.ok(new CategoriaDto(categoriaService.save(categoria)));
+			return ResponseEntity.ok(modelMapper.map(categoriaService.save(categoria), CategoriaDto.class));
 		}
 		
 		@CacheEvict(value = "listaDeCategorias", allEntries = true)
 		@PutMapping("")
 		public ResponseEntity<CategoriaDto> putCategoria(@RequestBody Categoria categoria){
-			return ResponseEntity.ok(new CategoriaDto(categoriaService.save(categoria)));
+			return ResponseEntity.ok(modelMapper.map(categoriaService.save(categoria), CategoriaDto.class));
 		}
 		
 		@CacheEvict(value = "listaDeCategorias", allEntries = true)
@@ -75,6 +75,6 @@ public class CategoriaRestController {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			
-			return ResponseEntity.ok(new CategoriaDto(categoriaService.delete(id)));
+			return ResponseEntity.ok(modelMapper.map(categoriaService.delete(id), CategoriaDto.class));
 		}
 }

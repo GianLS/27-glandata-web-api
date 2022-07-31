@@ -1,12 +1,17 @@
 package br.com.glandata.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +23,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import br.com.glandata.web.dto.ProdutoBasicoDto;
 import br.com.glandata.web.dto.ProdutoDto;
+import br.com.glandata.web.dto.ProdutoDto.ProdutoView;
 import br.com.glandata.web.model.Produto;
 import br.com.glandata.web.service.ProdutoService;
 
@@ -29,14 +38,23 @@ public class ProdutoRestController {
 	@Autowired
 	private ProdutoService produtoService;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	@GetMapping("")
-	@Cacheable(value = "listaDeProdutos")
 	public List<ProdutoDto> listarProdutos() {
-		List<ProdutoDto> produtos = new ArrayList<ProdutoDto>();
+		return produtoService.findAllDto();
+	}
 
-		produtoService.findAll().forEach(p -> produtos.add(new ProdutoDto(p)));
+	@GetMapping("listarBasicos")
+	public List<ProdutoBasicoDto> listarProdutosBasico() {
+		return produtoService.findAllBasicoDto();
+	}
 
-		return produtos;
+	@GetMapping("basicos")
+	@JsonView(value = ProdutoView.Basico.class)
+	public List<ProdutoDto> listarBasico() {
+		return produtoService.findAllDto();
 	}
 
 	@GetMapping("{id}")
@@ -47,31 +65,25 @@ public class ProdutoRestController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity<ProdutoDto>(new ProdutoDto(produto.get()), HttpStatus.OK);
+		return new ResponseEntity<ProdutoDto>(modelMapper.map(produto.get(), ProdutoDto.class), HttpStatus.OK);
 	}
 
-	@GetMapping("categoria/{id}")
-	public List<ProdutoDto> listarProdutosPorCategoria(@PathVariable Long id) {
-
-		List<ProdutoDto> produtos = new ArrayList<ProdutoDto>();
-		produtoService.produtosPorCategoria(id).forEach(p -> produtos.add(new ProdutoDto(p)));
-
-		return produtos;
+	@GetMapping("categoria/{nome}")
+	public List<ProdutoDto> listarProdutosPorCategoria(@PathVariable String nome) {
+		return produtoService.produtosPorCategoria(nome).stream().map(p -> modelMapper.map(p, ProdutoDto.class))
+				.collect(Collectors.toList());
 	}
 
-	@CacheEvict(value = "listaDeProdutos", allEntries = true)
 	@PostMapping("")
-	public ResponseEntity<ProdutoDto> postProduto(@RequestBody Produto produto) {
-		return ResponseEntity.ok(new ProdutoDto(produtoService.save(produto)));
+	public ResponseEntity<ProdutoDto> postProduto(@RequestBody @Valid Produto produto) {
+		return ResponseEntity.ok(modelMapper.map(produtoService.save(produto), ProdutoDto.class));
 	}
-	
-	@CacheEvict(value = "listaDeProdutos", allEntries = true)
+
 	@PutMapping("")
 	public ResponseEntity<ProdutoDto> putProduto(@RequestBody Produto produto) {
-		return ResponseEntity.ok(new ProdutoDto(produtoService.save(produto)));
+		return ResponseEntity.ok(modelMapper.map(produtoService.save(produto), ProdutoDto.class));
 	}
 
-	@CacheEvict(value = "listaDeProdutos", allEntries = true)
 	@DeleteMapping("{id}")
 	public ResponseEntity<ProdutoDto> deleteProduto(@PathVariable Long id) {
 		Optional<Produto> produto = produtoService.findById(id);
@@ -79,7 +91,13 @@ public class ProdutoRestController {
 		if (produto.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		
-		return ResponseEntity.ok(new ProdutoDto(produtoService.delete(id)));
+
+		return ResponseEntity.ok(modelMapper.map(produtoService.delete(id), ProdutoDto.class));
+	}
+
+	@GetMapping("paginado")
+	public ResponseEntity<Page<Produto>> listaPaginada(@PageableDefault(page = 0, size = 5, sort = "id", direction = Direction.ASC) Pageable pageable) {
+		Page<Produto> produtos = produtoService.findAllPageable(pageable);
+		return new ResponseEntity<>(produtos, HttpStatus.OK);
 	}
 }

@@ -1,9 +1,10 @@
 package br.com.glandata.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,15 +29,15 @@ public class ClienteRestController {
 
 	@Autowired
 	private ClienteService clienteService;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@GetMapping("")
 	@Cacheable(value = "listaDeClientes")
 	public List<ClienteDto> listarClientes() {
-		List<ClienteDto> clientes = new ArrayList<ClienteDto>();
+		return clienteService.findAll().stream().map(c -> modelMapper.map(c, ClienteDto.class)).collect(Collectors.toList());
 
-		clienteService.findAll().forEach(p -> clientes.add(new ClienteDto(p)));
-
-		return clientes;
 	}
 
 	@GetMapping("{id}")
@@ -47,7 +48,7 @@ public class ClienteRestController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity<ClienteDto>(new ClienteDto(cliente.get()), HttpStatus.OK);
+		return new ResponseEntity<ClienteDto>(modelMapper.map(cliente.get(), ClienteDto.class), HttpStatus.OK);
 	}
 
 	@CacheEvict(value = "listaDeClientes", allEntries = true)
